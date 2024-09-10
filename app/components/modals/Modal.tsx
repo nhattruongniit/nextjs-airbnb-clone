@@ -8,8 +8,8 @@ interface ModalProps  {
   onClose: () => void;
   onSubmit: () => void;
   title?: string;
-  body?: string;
-  footer?: string;
+  body?: React.ReactElement;
+  footer?: React.ReactElement;
   actionLabel: string;
   disabled?: boolean;
   secondaryAction?: () => void;
@@ -68,7 +68,7 @@ function Modal({
           {/* CONTENT */}
           <div
             className={`translate duration-300 h-full
-              ${showModal ? 'transition-y-0' : 'transition-y-full'}
+              ${showModal ? 'translate-y-0' : 'translate-y-full'}
               ${showModal ? 'opacity-100' : 'opacity-0'}
             `}
           >
@@ -108,6 +108,8 @@ function Modal({
                     onClick={handleSubmit}
                   />
                 </div>
+
+                {footer}  
               </div>
             </div>
           </div>
