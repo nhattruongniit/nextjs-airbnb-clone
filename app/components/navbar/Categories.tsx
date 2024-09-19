@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
@@ -114,4 +115,4 @@ function Categories() {
   )
 }
 
-export default Categories
+export default Categories;
