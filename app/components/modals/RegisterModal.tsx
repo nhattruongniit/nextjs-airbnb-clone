@@ -4,16 +4,23 @@ import { signIn } from 'next-auth/react';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+
+// icons
 import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 
-import { useRegisterModal } from '@/app/hooks/useRegisterModal';
+// components
 import Modal from './Modal';
 import Heading from '../Heading';
 import Input from '../inputs/Input';
 import Button from '../Button';
 
+// hooks
+import { useRegisterModal } from '@/app/hooks/useRegisterModal';
+import { useLoginModal } from '@/app/hooks/useLoginModal';
+
 function RegisterModal() {
+  const loginModal =  useLoginModal();
   const registerModal = useRegisterModal();
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -41,6 +48,11 @@ function RegisterModal() {
     }
     setIsLoading(false);
   }
+
+  const toggle = React.useCallback(() => {
+    registerModal.onClose();
+    loginModal.onOpen();
+  }, [loginModal, registerModal])
 
   const bodyContent = (
     <div className='flex flex-col gap-4'>
@@ -97,7 +109,7 @@ function RegisterModal() {
             Already have an account?
           </div>
           <div 
-            onClick={registerModal.onClose}
+            onClick={toggle}
             className='text-neutral-800 cursor-pointer hover:underline'
           >
             Log in
