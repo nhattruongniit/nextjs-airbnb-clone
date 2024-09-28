@@ -14,6 +14,7 @@
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "clsx": "^2.1.1",
+    "leaflet": "^1.9.4",
     "next": "14.2.7",
     "next-auth": "^4.24.7",
     "query-string": "^9.1.0",
@@ -22,10 +23,14 @@
     "react-hook-form": "^7.53.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.3.0",
+    "react-leaflet": "^4.2.1",
+    "react-select": "^5.8.1",
+    "world-countries": "^5.0.0",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/leaflet": "^1.9.12",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
