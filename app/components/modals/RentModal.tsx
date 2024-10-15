@@ -1,16 +1,20 @@
 'use client'
-import React from 'react'
-import Modal from './Modal'
-import { FieldValues, useForm } from 'react-hook-form';
+import React from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import dynamic from 'next/dynamic';
 import { useRentModal } from '@/app/hooks/useRentModal'
 import { categories } from '@/app/mocks/categories'
 
+import Modal from './Modal'
 import Heading from '../Heading';
 import CategoryInput from '../inputs/CategoryInput';
 import CountrySelect from '../inputs/CountrySelect';
 import Counter from '../inputs/Counter';
 import ImageUpload from '../inputs/ImageUpload';
+import Input from '../inputs/Input';
 
 enum STEPS {
   CATEGORY = 0,
@@ -22,8 +26,10 @@ enum STEPS {
 }
 
 function RentModal() {
+  const router = useRouter();
   const rentModal = useRentModal();
   const [step, setStep] = React.useState(STEPS.CATEGORY);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const {
     register,
@@ -40,7 +46,7 @@ function RentModal() {
       location: null,
       guestCount: 1,
       roomCount: 1,
-      bathroomCount: 1,
+      bathRoomCount: 1,
       imageSrc: '',
       price: 1,
       title: '',
@@ -52,7 +58,7 @@ function RentModal() {
   const location = watch('location');
   const guestCount = watch('guestCount');
   const roomCount = watch('roomCount');
-  const bathroomCount = watch('bathroomCount');
+  const bathRoomCount = watch('bathRoomCount');
   const imageSrc = watch('imageSrc');
 
   const Map = React.useMemo(() => {
@@ -72,9 +78,32 @@ function RentModal() {
   const onBack = () => {
     setStep(prevStep => prevStep - 1);
   }
-
+ 
   const onNext = () => {
     setStep(prevStep => prevStep + 1);
+  }
+
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    if(step !== STEPS.PRICE) {
+      onNext();
+      return;
+    }
+
+    setIsLoading(true);
+    axios.post('/api/listings', data)
+      .then(() => {
+        toast.success('Listing created successfully!');
+        router.refresh();
+        reset();
+        setStep(STEPS.CATEGORY);
+        rentModal.onClose();
+      })
+      .catch(() => {
+        toast.error('An error occurred. Please try again later.');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   const actionLabel = React.useMemo(() => {
@@ -161,8 +190,8 @@ function RentModal() {
         <Counter
           title="Bathrooms"
           subtitle='How many bathrooms do you have?'
-          value={bathroomCount}
-          onChange={value => setCustomValue('bathroomCount', value)}
+          value={bathRoomCount}
+          onChange={value => setCustomValue('bathRoomCount', value)}
         />
       </div>
     )
@@ -183,11 +212,60 @@ function RentModal() {
     )
   }
 
+  if(step === STEPS.DESCRIPTION) {
+    bodyContent = (
+      <div className='flex flex-col gap-8'>
+        <Heading 
+          title="How would you describe your place?"
+          subTitle="Short and sweet works best!"
+        />
+        <Input 
+          label="Title"
+          id="title"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+        <hr />
+        <Input 
+          label="Description"
+          id="description"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    )
+  }
+
+  if(step === STEPS.PRICE) {
+    bodyContent = (
+      <div className='flex flex-col gap-8'>
+        <Heading 
+          title="Now, set your price"
+          subTitle="How much do you charge per night?"
+        />
+        <Input 
+          label="Price"
+          id="price"
+          formatPrice
+          type="number"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    )
+  }
+
   return (
     <Modal
       isOpen={rentModal.isOpen}
       onClose={rentModal.onClose}
-      onSubmit={onNext}
+      onSubmit={handleSubmit(onSubmit)}
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
