@@ -2,7 +2,9 @@
 import React from 'react';
 import { signOut } from 'next-auth/react';
 import { AiOutlineMenu } from 'react-icons/ai';
+import { useRouter } from 'next/navigation';
 import { SafeUser } from '@/app/types';
+
 
 // components
 import Avatar from '../Avatar';
@@ -18,6 +20,7 @@ interface UserMenuProps {
 }
 
 function UserMenu({ currentUser }: UserMenuProps) {
+  const router = useRouter();
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
   const rentModal =  useRentModal();
@@ -66,7 +69,7 @@ function UserMenu({ currentUser }: UserMenuProps) {
             {currentUser ? (
               <>
                 <MenuItem 
-                  onClick={() => {}}
+                  onClick={() => router.push('/trips')}
                   label='My trips'
                 />
                 <MenuItem 
