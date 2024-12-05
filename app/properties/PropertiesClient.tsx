@@ -4,26 +4,26 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import Container from '../components/Container';
 import Heading from '../components/Heading';
-import { SafeReservation, SafeUser } from '../types'
+import { SafeListing, SafeUser } from '../types'
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import ListingCard from '../components/listings/ListingCard';
 
-interface TripsClientProps {
-  reservations?: SafeReservation[];
+interface PropertiesClientProps {
+  listings?: SafeListing[];
   currentUser?: SafeUser | null;
 }
 
-function TripsClient({ reservations, currentUser }: TripsClientProps) {
+function PropertiesClient({ listings, currentUser }: PropertiesClientProps) {
   const router = useRouter();
   const [deletingId, setDeletingId] = React.useState<string>('');
 
   function onCancel(id: string) {
     setDeletingId(id);
 
-    axios.delete(`/api/reservations/${id}`)
+    axios.delete(`/api/listings/${id}`)
       .then(() => {
-        toast.success('Reservation cancelled');
+        toast.success('Listings deleted');
         router.refresh();
       })
       .catch((error) => {
@@ -37,21 +37,20 @@ function TripsClient({ reservations, currentUser }: TripsClientProps) {
   return (
     <Container>
       <Heading 
-        title='Trips'
-        subTitle="Where you've been and where you're going"
+        title='Properties'
+        subTitle="List of your properties"
       />
       <div
         className='mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8'
       >
-        {reservations?.map(reservation => (
+        {listings?.map(listing => (
           <ListingCard 
-            key={reservation.id}
-            data={reservation.listing}
-            reservation={reservation}
-            actionId={reservation.id}
+            key={listing.id}
+            data={listing}
+            actionId={listing.id}
             onAction={onCancel}
-            disabled={deletingId === reservation.id}
-            actionLabel='Cancel reservation'
+            disabled={deletingId === listing.id}
+            actionLabel='Delete property'
             currentUser={currentUser}
           />
         ))}
@@ -60,4 +59,4 @@ function TripsClient({ reservations, currentUser }: TripsClientProps) {
   )
 }
 
-export default TripsClient
+export default PropertiesClient

@@ -1,20 +1,22 @@
 'use client'
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import Container from '../components/Container';
-import Heading from '../components/Heading';
-import { SafeReservation, SafeUser } from '../types'
+import React from 'react'
 import axios from 'axios';
-import toast from 'react-hot-toast';
-import ListingCard from '../components/listings/ListingCard';
+import { useRouter } from 'next/navigation';
 
-interface TripsClientProps {
-  reservations?: SafeReservation[];
-  currentUser?: SafeUser | null;
+import { SafeReservation, SafeUser } from '../types'
+
+import Heading from '../components/Heading';
+import Container from '../components/Container';
+import ListingCard from '../components/listings/ListingCard';
+import toast from 'react-hot-toast';
+
+interface ReservationsClientProps {
+  reservations: SafeReservation[];
+  currentUser: SafeUser | null;
 }
 
-function TripsClient({ reservations, currentUser }: TripsClientProps) {
+function ReservationsClient({ reservations, currentUser }: ReservationsClientProps) {
   const router = useRouter();
   const [deletingId, setDeletingId] = React.useState<string>('');
 
@@ -26,32 +28,33 @@ function TripsClient({ reservations, currentUser }: TripsClientProps) {
         toast.success('Reservation cancelled');
         router.refresh();
       })
-      .catch((error) => {
-        toast.error(error?.response?.data?.error || 'An error occurred');
+      .catch(() => {
+        toast.error('Failed to cancel reservation');
       })
       .finally(() => {
         setDeletingId('');
       });
   }
-
+  
   return (
     <Container>
       <Heading 
-        title='Trips'
-        subTitle="Where you've been and where you're going"
+        title="Your Reservations" 
+        subTitle={`Welcome back, ${currentUser?.name}`}
       />
+
       <div
-        className='mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8'
+        className='mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8'   
       >
-        {reservations?.map(reservation => (
-          <ListingCard 
+        {reservations.map(reservation => (
+          <ListingCard
             key={reservation.id}
             data={reservation.listing}
             reservation={reservation}
             actionId={reservation.id}
             onAction={onCancel}
             disabled={deletingId === reservation.id}
-            actionLabel='Cancel reservation'
+            actionLabel='Cancel guest reservation'
             currentUser={currentUser}
           />
         ))}
@@ -60,4 +63,4 @@ function TripsClient({ reservations, currentUser }: TripsClientProps) {
   )
 }
 
-export default TripsClient
+export default ReservationsClient

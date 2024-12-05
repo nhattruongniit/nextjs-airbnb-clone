@@ -42,18 +42,20 @@ function RegisterModal() {
     setIsLoading(true);
     try {
       await axios.post('/api/register', data);
+      toast.success(`Account created successfully.`);
       registerModal.onClose();
+      loginModal.onOpen();
     } catch(error) {
       toast.error(`Something went wrong.`);
     }
     setIsLoading(false);
   }
 
-  const toggle = React.useCallback(() => {
+  const toggle = () => {
     registerModal.onClose();
     loginModal.onOpen();
-  }, [loginModal, registerModal])
-
+  };
+  
   const bodyContent = (
     <div className='flex flex-col gap-4'>
       <Heading 
