@@ -61,11 +61,9 @@ function RentModal() {
   const bathRoomCount = watch('bathRoomCount');
   const imageSrc = watch('imageSrc');
 
-  const Map = React.useMemo(() => {
-    return dynamic(() => import('../Map'), {
-      ssr: false
-    })
-  }, [location])
+  const Map = dynamic(() => import('../Map'), {
+    ssr: false
+  });
 
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {

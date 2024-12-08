@@ -36,7 +36,7 @@ function SearchModal() {
     key: 'selection'
   })
 
-  const Map = React.useMemo(() => dynamic(() => import('@/app/components/Map')), [location]);
+  const Map = dynamic(() => import('@/app/components/Map'));
 
   const onBack = () => {
     setStep(prevState => prevState - 1);
