@@ -36,7 +36,9 @@ function SearchModal() {
     key: 'selection'
   })
 
-  const Map = dynamic(() => import('@/app/components/Map'));
+  const Map = dynamic(() => import('@/app/components/Map'), {
+    ssr: false
+  });
 
   const onBack = () => {
     setStep(prevState => prevState - 1);
